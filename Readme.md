@@ -52,6 +52,9 @@ being declared as `usigned int` but not returning a value. I changed it to void,
 
 The analog clock assumes the current circumference of the 3d printed inner-case. The led strip should be sticked to the inner case clock-wise and the first led should be on top (12 'o Clock so to speak). It will go around the case exactly 3-times.
 
+### PCB 
+
+You do not need an extra PCB, but it may help to keep everything in place.
 
 ## TODO
 
