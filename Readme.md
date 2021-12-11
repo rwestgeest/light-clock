@@ -33,6 +33,14 @@ Best way to do this is incrementally, by trying to compile the sketch and fix xx
 * TM1637 (latest version)  
   For driving the led display
 
+### First steps with components and code
+
+Take things step by step
+
+* Stick your components in a breadboard and wire them there to try them out. Start with just the led display and go from there.
+* Open the serial monitor on 11500 baud 
+* Change the SSID and WPA password for your network in the code
+* Upload the code and see what happens
 
 ## Notes on implementing the clock
 
