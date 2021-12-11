@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {overflow:auto;
+background:white;}
+.button {
+	background-color: #e7e7e7;
+	border: none;
+	padding: 15px 32px;
+	text-align: center;
+	display: inline-block;
+	font-size: 24px;
+	margin: 4px 2px;
+	cursor: pointer;
+	width: 100%;
+}
+.button2{
+	width:60%;
+	background-color: #008cba;
+	color:white;
+	margin: 4px 20%;
+	padding:0px, 0px;
+}
+.button3{
+	width:40%;
+	background-color: #00e7ba;
+	color:white;
+	margin: 4px 30%;
+	padding: 0px 0px;
+	height: 45px;
+}
+.button4{
+	width:25%;
+	background-color:#f00000;
+	color:white;
+	margin: 4px 38%;
+	padding:0px 0px;
+	height:50px;
+}
+select{
+	font-size:24px;
+	width: 50%;
+	margin:4px 25%;
+}
+.slider {
+    
+    width: 75%; 
+    height: 25px; 
+    background: #d3d3d3; 
+    outline: none; 
+    opacity: 0.7; 
+    -webkit-transition: .1s; 
+    transition: opacity .1s;
+}
+.sliderR{
+	color: #ff0000;
+}
+.sliderG{
+	color: #00ff00;
+}
+.sliderB{
+	color: #0000ff;
+}
+.sliderW{
+	color: #808080;
+}
+.sliderCLK{
+	width: 40%;
+	margin: 2px 30%;
+}
+</style>
+</head>
+<body>
+<input type="button" class="button" name="send" value= "Engage" onclick="send()"/><br>
+<input type="button" class="button button2"id="clock" value="Toggle Digital Clock" onclick="sendclock()"/><br> 
+<input type="button" class="button button3"id="miltime" value="Toggle 12hr/24hr" onclick="sendclockmil()"/><br> 
+<label for="clkbrite" id="cbritelabel" >Clock Brightness:</label>
+<input id ="clkbrite" name="clkbrite" class="slider sliderCLK"type="range"min="0" max="7"value="6" step="1"/><br>
+<input type="button" class="button button4"id="LightsOut" value="Turn Lights Off" onclick="sendLightsOut()"/><br> 
+<h2>Select Mode:</h2>
+
+<select id="modeSelect" oninput="display()">
+  <option value="0">Select Mode...
+  <option value="1">Alarm
+  <option value="2">Analog Clock
+  <option value="3">Color
+  <option value="4">Color Cycle
+  <option value="5">Color Cylinder
+  <option value="6">Color Vortex
+  <option value="7">Rainbow
+</select>
+
+<p id="instructions"></p>
+
+<p id="demo"></p>
+<label for="alarm" id="alarmlabel" style="visibility:hidden;">Alarm</label>
+<input type="time" id=alarm value="06:00:00" step="2"style="visibility:hidden;"><br>
+
+<label for="wakeTime" id="wTlabel" style="visibility:hidden;">Wake Time:</label>
+<input id ="wakeTime" type="number" min="0" max="60"value="15" step="1" style="visibility:hidden;"><br>
+
+<label for="speed" id="splabel" style="visibility:hidden;">Cycle Speed in sec:</label>
+<input id ="speed" type="number"min="0" max="3600" value="10" step="1" style="visibility:hidden;"><br>
+<label for="speed2" id="sp2label" style="visibility:hidden;">RPM:</label>
+<input id ="speed2" class="slider"type="range"min="1" max="200"value="60" step="1" style="visibility:hidden;"><br>
+
+<label for="warmcool" id="wclabel" style="visibility:hidden;">Color Temp:</label>
+<input type="range"class="slider" id ="warmcool" min="0" max="2" value="1" step="1" style="visibility:hidden;" oninput="warmCool()"/><br>
+
+
+<p id="colorPick1"style="visibility:hidden;"></p>
+
+<input  id="colorPicker1" type="color" value="#010101"style="visibility:hidden;" oninput="colorpicker(1)"/><br>
+
+<label for="w1" id="wlabel1" style="visibility:hidden;">W</label>
+<input id ="w1" class="slider sliderW" type="range"min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(1)"/><br>
+
+<label for="r1" id="rlabel1" style="visibility:hidden;">R</label>
+<input id ="r1" class="slider sliderR" type="range"min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(1)"/><br>
+
+<label for="g1" id="glabel1" style="visibility:hidden;">G</label>
+<input id ="g1" class="slider sliderG" type="range"min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(1)"/><br>
+
+<label for="b1" id="blabel1" style="visibility:hidden;">B</label>
+<input id ="b1" class="slider sliderB" type="range"min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(1)"/><br>
+
+<p id="demo1"style="visibility:hidden;"></p>
+
+
+
+<p id="colorPick2"style="visibility:hidden;"></p>
+<input  id="colorPicker2" type="color"value="#010101"style="visibility:hidden;" oninput="colorpicker(2)"/><br>
+
+<label for="w2" id="wlabel2" style="visibility:hidden;">W</label>
+<input id ="w2" class="slider sliderW" type="range" min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(2)"/><br>
+
+<label for="r2" id="rlabel2" style="visibility:hidden;">R</label>
+<input id ="r2" class="slider sliderR" type="range" min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(2)"/><br>
+
+<label for="g2" id="glabel2" style="visibility:hidden;">G</label>
+<input id ="g2" class="slider sliderG" type="range" min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(2)"/><br>
+
+<label for="b2" id="blabel2" style="visibility:hidden;">B</label>
+<input id ="b2" class="slider sliderB" type="range" min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(2)"/><br>
+
+<p id="demo2"style="visibility:hidden;"></p>
+
+
+
+<p id="colorPick3"style="visibility:hidden;"></p>
+<input  id="colorPicker3" type="color"value="#010101"style="visibility:hidden;" oninput="colorpicker(3)"/><br>
+
+<label for="w3" id="wlabel3" style="visibility:hidden;">W</label>
+<input id ="w3" class="slider sliderW" type="range" min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(3)"/><br>
+
+<label for="r3" id="rlabel3" style="visibility:hidden;">R</label>
+<input id ="r3" class="slider sliderR" type="range" min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(3)"/><br>
+
+<label for="g3" id="glabel3" style="visibility:hidden;">G</label>
+<input id ="g3" class="slider sliderG" type="range" min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(3)"/><br>
+
+<label for="b3" id="blabel3" style="visibility:hidden;">B</label>
+<input id ="b3" class="slider sliderB" type="range" min="0" max="255"list="tickmarks"value="0" style="visibility:hidden;" oninput="rgbToColorPicker(3)"/><br>
+
+<p id="demo3"style="visibility:hidden;"></p>
+
+
+
+
+<script>
+function display() {
+    var x = document.getElementById("modeSelect").value;
+    document.getElementById("demo").innerHTML = "Current Mode: " + x;
+    var i=1;
+    if (x == '0') {//insult
+      	document.getElementById('alarm').style.visibility = 'hidden';
+		document.getElementById('wTlabel').style.visibility = 'hidden';
+		document.getElementById('wakeTime').style.visibility = 'hidden';
+        document.getElementById('alarmlabel').style.visibility = 'hidden';
+        document.getElementById('warmcool').style.visibility = 'hidden';
+        document.getElementById('wclabel').style.visibility = 'hidden';
+        document.getElementById('speed').style.visibility = 'hidden';
+        document.getElementById('splabel').style.visibility = 'hidden';
+        document.getElementById('speed2').style.visibility = 'hidden';
+        document.getElementById('sp2label').style.visibility = 'hidden';
+        document.getElementById("instructions").innerHTML = "Choose a valid operating mode smartass.";
+        for (i=1; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'hidden';
+        	document.getElementById('w'+i).style.visibility = 'hidden';
+       		document.getElementById('r'+i).style.visibility = 'hidden';
+        	document.getElementById('g'+i).style.visibility = 'hidden';
+        	document.getElementById('b'+i).style.visibility = 'hidden';
+        	document.getElementById('wlabel'+i).style.visibility = 'hidden';
+        	document.getElementById('rlabel'+i).style.visibility = 'hidden';
+        	document.getElementById('glabel'+i).style.visibility = 'hidden';
+        	document.getElementById('blabel'+i).style.visibility = 'hidden';
+        	document.getElementById('demo'+i).style.visibility = 'hidden';
+            document.getElementById("colorPick"+i).style.visibility = 'hidden';
+            
+        }
+	}
+    if (x == '1') {//alarm only
+      	document.getElementById('alarm').style.visibility = 'visible';
+		document.getElementById('wTlabel').style.visibility = 'visible';
+		document.getElementById('wakeTime').style.visibility = 'visible';
+        document.getElementById('alarmlabel').style.visibility = 'visible';
+        document.getElementById('warmcool').style.visibility = 'hidden';
+        document.getElementById('wclabel').style.visibility = 'hidden';
+        document.getElementById('speed').style.visibility = 'hidden';
+        document.getElementById('splabel').style.visibility = 'hidden';
+        document.getElementById('speed2').style.visibility = 'hidden';
+        document.getElementById('sp2label').style.visibility = 'hidden';
+        document.getElementById("instructions").innerHTML = "Please set time of alarm:";
+        for (i=1; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'hidden';
+        	document.getElementById('w'+i).style.visibility = 'hidden';
+       		document.getElementById('r'+i).style.visibility = 'hidden';
+        	document.getElementById('g'+i).style.visibility = 'hidden';
+        	document.getElementById('b'+i).style.visibility = 'hidden';
+        	document.getElementById('wlabel'+i).style.visibility = 'hidden';
+        	document.getElementById('rlabel'+i).style.visibility = 'hidden';
+        	document.getElementById('glabel'+i).style.visibility = 'hidden';
+        	document.getElementById('blabel'+i).style.visibility = 'hidden';
+        	document.getElementById('demo'+i).style.visibility = 'hidden';
+            document.getElementById("colorPick"+i).style.visibility = 'hidden';
+            
+        }
+	}
+    if (x == '2') {//Analog clock display
+      	document.getElementById('alarm').style.visibility = 'hidden';
+		document.getElementById('wTlabel').style.visibility = 'hidden';
+		document.getElementById('wakeTime').style.visibility = 'hidden';
+        document.getElementById('alarmlabel').style.visibility = 'hidden';
+        document.getElementById('warmcool').style.visibility = 'visible';
+        document.getElementById('wclabel').style.visibility = 'visible';
+        document.getElementById('speed').style.visibility = 'hidden';
+        document.getElementById('splabel').style.visibility = 'hidden';
+        document.getElementById('speed2').style.visibility = 'hidden';
+        document.getElementById('sp2label').style.visibility = 'hidden';
+         document.getElementById("instructions").innerHTML = "Please set colors for each clock hand. Black for random.";
+        for (i=1; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'visible';
+        	document.getElementById('w'+i).style.visibility = 'visible';
+       		document.getElementById('r'+i).style.visibility = 'visible';
+        	document.getElementById('g'+i).style.visibility = 'visible';
+        	document.getElementById('b'+i).style.visibility = 'visible';
+        	document.getElementById('wlabel'+i).style.visibility = 'visible';
+        	document.getElementById('rlabel'+i).style.visibility = 'visible';
+        	document.getElementById('glabel'+i).style.visibility = 'visible';
+        	document.getElementById('blabel'+i).style.visibility = 'visible';
+        	document.getElementById('demo'+i).style.visibility = 'visible';
+            if (i==1) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Hours Color:";
+            }
+            if (i==2) {
+           		document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Minutes Color:";
+            }
+            if (i==3) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+            	document.getElementById("colorPick"+i).innerHTML = "Seconds Color:";
+            }
+        }
+	}
+    if (x == '3') {//single color
+      	document.getElementById('alarm').style.visibility = 'hidden';
+		document.getElementById('wTlabel').style.visibility = 'hidden';
+		document.getElementById('wakeTime').style.visibility = 'hidden';
+        document.getElementById('alarmlabel').style.visibility = 'hidden';
+        document.getElementById('colorPicker'+1).style.visibility = 'visible';
+        document.getElementById('warmcool').style.visibility = 'hidden';
+        document.getElementById('wclabel').style.visibility = 'hidden';
+        document.getElementById('speed').style.visibility = 'hidden';
+        document.getElementById('splabel').style.visibility = 'hidden';
+        document.getElementById('speed2').style.visibility = 'hidden';
+        document.getElementById('sp2label').style.visibility = 'hidden';
+         document.getElementById("instructions").innerHTML = "Please choose a color:";
+        	document.getElementById('w'+1).style.visibility = 'visible';
+       		document.getElementById('r'+1).style.visibility = 'visible';
+        	document.getElementById('g'+1).style.visibility = 'visible';
+        	document.getElementById('b'+1).style.visibility = 'visible';
+        	document.getElementById('wlabel'+1).style.visibility = 'visible';
+        	document.getElementById('rlabel'+1).style.visibility = 'visible';
+        	document.getElementById('glabel'+1).style.visibility = 'visible';
+        	document.getElementById('blabel'+1).style.visibility = 'visible';
+        	document.getElementById('demo'+1).style.visibility = 'visible';
+            document.getElementById("colorPick"+i).style.visibility = 'visible';
+            document.getElementById("colorPick"+i).innerHTML = "Color:";
+        for (i=2; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'hidden';
+        	document.getElementById('w'+i).style.visibility = 'hidden';
+       		document.getElementById('r'+i).style.visibility = 'hidden';
+        	document.getElementById('g'+i).style.visibility = 'hidden';
+        	document.getElementById('b'+i).style.visibility = 'hidden';
+        	document.getElementById('wlabel'+i).style.visibility = 'hidden';
+        	document.getElementById('rlabel'+i).style.visibility = 'hidden';
+        	document.getElementById('glabel'+i).style.visibility = 'hidden';
+        	document.getElementById('blabel'+i).style.visibility = 'hidden';
+        	document.getElementById('demo'+i).style.visibility = 'hidden';
+            if (i==2) {
+            document.getElementById("colorPick"+i).style.visibility = 'hidden';
+            }
+            if (i==3) {
+            document.getElementById("colorPick"+i).style.visibility = 'hidden';
+            }
+        }
+	}
+    if (x == '4') {//Color Cycle
+      	document.getElementById('alarm').style.visibility = 'hidden';
+		document.getElementById('wTlabel').style.visibility = 'hidden';
+		document.getElementById('wakeTime').style.visibility = 'hidden';
+        document.getElementById('alarmlabel').style.visibility = 'hidden';
+        document.getElementById('warmcool').style.visibility = 'visible';
+        document.getElementById('wclabel').style.visibility = 'visible';
+        document.getElementById('speed').style.visibility = 'visible';
+        document.getElementById('splabel').style.visibility = 'visible';
+        document.getElementById('speed2').style.visibility = 'hidden';
+        document.getElementById('sp2label').style.visibility = 'hidden';
+         document.getElementById("instructions").innerHTML = "Please choose cycle speed and three base colors. Black for random.";
+        for (i=1; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'visible';
+        	document.getElementById('w'+i).style.visibility = 'visible';
+       		document.getElementById('r'+i).style.visibility = 'visible';
+        	document.getElementById('g'+i).style.visibility = 'visible';
+        	document.getElementById('b'+i).style.visibility = 'visible';
+        	document.getElementById('wlabel'+i).style.visibility = 'visible';
+        	document.getElementById('rlabel'+i).style.visibility = 'visible';
+        	document.getElementById('glabel'+i).style.visibility = 'visible';
+        	document.getElementById('blabel'+i).style.visibility = 'visible';
+        	document.getElementById('demo'+i).style.visibility = 'visible';
+            if (i==1) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Color 1:";
+            }// needs code on arduino side to determine fading values between colors
+            if (i==2) {
+           		document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Color 2:";
+            }
+            if (i==3) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+            	document.getElementById("colorPick"+i).innerHTML = "Color 3:";
+            }
+        }
+	}
+    if (x == '5') {//Color Cylinder
+      	document.getElementById('alarm').style.visibility = 'hidden';
+		document.getElementById('wTlabel').style.visibility = 'hidden';
+		document.getElementById('wakeTime').style.visibility = 'hidden';
+        document.getElementById('alarmlabel').style.visibility = 'hidden';
+        document.getElementById('warmcool').style.visibility = 'visible';
+        document.getElementById('wclabel').style.visibility = 'visible';
+        document.getElementById('speed').style.visibility = 'hidden';
+        document.getElementById('splabel').style.visibility = 'hidden';
+        document.getElementById('speed2').style.visibility = 'visible';
+        document.getElementById('sp2label').style.visibility = 'visible';
+         document.getElementById("instructions").innerHTML = "Please choose cycle speed and three base colors. Black for random.";
+        for (i=1; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'visible';
+        	document.getElementById('w'+i).style.visibility = 'visible';
+       		document.getElementById('r'+i).style.visibility = 'visible';
+        	document.getElementById('g'+i).style.visibility = 'visible';
+        	document.getElementById('b'+i).style.visibility = 'visible';
+        	document.getElementById('wlabel'+i).style.visibility = 'visible';
+        	document.getElementById('rlabel'+i).style.visibility = 'visible';
+        	document.getElementById('glabel'+i).style.visibility = 'visible';
+        	document.getElementById('blabel'+i).style.visibility = 'visible';
+        	document.getElementById('demo'+i).style.visibility = 'visible';
+            if (i==1) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Color 1:";
+            }// needs code on arduino side to determine fading values between colors
+            if (i==2) {
+           		document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Color 2:";
+            }
+            if (i==3) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+            	document.getElementById("colorPick"+i).innerHTML = "Color 3:";
+            }
+        }
+	}
+    if (x == '6') {//Color Vortex
+      	document.getElementById('alarm').style.visibility = 'hidden';
+		document.getElementById('wTlabel').style.visibility = 'hidden';
+		document.getElementById('wakeTime').style.visibility = 'hidden';
+        document.getElementById('alarmlabel').style.visibility = 'hidden';
+        document.getElementById('warmcool').style.visibility = 'visible';
+        document.getElementById('wclabel').style.visibility = 'visible';
+        document.getElementById('speed').style.visibility = 'visible';
+        document.getElementById('splabel').style.visibility = 'visible';
+        document.getElementById('speed2').style.visibility = 'visible';
+        document.getElementById('sp2label').style.visibility = 'visible';
+         document.getElementById("instructions").innerHTML = "Please choose cycle speed and three base colors. Black for random.";
+        for (i=1; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'visible';
+        	document.getElementById('w'+i).style.visibility = 'visible';
+       		document.getElementById('r'+i).style.visibility = 'visible';
+        	document.getElementById('g'+i).style.visibility = 'visible';
+        	document.getElementById('b'+i).style.visibility = 'visible';
+        	document.getElementById('wlabel'+i).style.visibility = 'visible';
+        	document.getElementById('rlabel'+i).style.visibility = 'visible';
+        	document.getElementById('glabel'+i).style.visibility = 'visible';
+        	document.getElementById('blabel'+i).style.visibility = 'visible';
+        	document.getElementById('demo'+i).style.visibility = 'visible';
+            if (i==1) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Color 1:";
+            }// needs code on arduino side to determine fading values between colors
+            if (i==2) {
+           		document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Color 2:";
+            }
+            if (i==3) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+            	document.getElementById("colorPick"+i).innerHTML = "Color 3:";
+            }
+        }
+	}
+    if (x == '7') {//rainbow
+      	document.getElementById('alarm').style.visibility = 'hidden';
+		document.getElementById('wTlabel').style.visibility = 'hidden';
+		document.getElementById('wakeTime').style.visibility = 'hidden';
+        document.getElementById('alarmlabel').style.visibility = 'hidden';
+        document.getElementById('warmcool').style.visibility = 'hidden';
+        document.getElementById('wclabel').style.visibility = 'hidden';
+        document.getElementById('speed').style.visibility = 'visible';
+        document.getElementById('splabel').style.visibility = 'visible';
+        document.getElementById('speed2').style.visibility = 'visible';
+        document.getElementById('sp2label').style.visibility = 'visible';
+         document.getElementById("instructions").innerHTML = "Please choose cycle speed."
+        for (i=1; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'hidden';
+        	document.getElementById('w'+i).style.visibility ='hidden';
+       		document.getElementById('r'+i).style.visibility ='hidden';
+        	document.getElementById('g'+i).style.visibility = 'hidden';
+        	document.getElementById('b'+i).style.visibility ='hidden';
+        	document.getElementById('wlabel'+i).style.visibility = 'hidden';
+        	document.getElementById('rlabel'+i).style.visibility = 'hidden';
+        	document.getElementById('glabel'+i).style.visibility ='hidden';
+        	document.getElementById('blabel'+i).style.visibility = 'hidden';
+        	document.getElementById('demo'+i).style.visibility = 'hidden';
+            if (i==1) {
+            	document.getElementById("colorPick"+i).style.visibility = 'hidden';
+                document.getElementById("colorPick"+i).innerHTML = "Color 1:";
+            }// needs code on arduino side to determine fading values between colors
+            if (i==2) {
+           		document.getElementById("colorPick"+i).style.visibility ='hidden';
+                document.getElementById("colorPick"+i).innerHTML = "Color 2:";
+            }
+            if (i==3) {
+            	document.getElementById("colorPick"+i).style.visibility = 'hidden';
+            	document.getElementById("colorPick"+i).innerHTML = "Color 3:";
+            }
+        }
+	}
+  if (x == '8') {//Music Response 1
+      	document.getElementById('alarm').style.visibility = 'hidden';
+		document.getElementById('wTlabel').style.visibility = 'hidden';
+		document.getElementById('wakeTime').style.visibility = 'hidden';
+        document.getElementById('alarmlabel').style.visibility = 'hidden';
+        document.getElementById('warmcool').style.visibility = 'visible';
+        document.getElementById('wclabel').style.visibility = 'visible';
+        document.getElementById('speed').style.visibility = 'hidden';
+        document.getElementById('splabel').style.visibility = 'hidden';
+        document.getElementById('speed2').style.visibility = 'hidden';
+        document.getElementById('sp2label').style.visibility = 'hidden';
+         document.getElementById("instructions").innerHTML = "Please choose three base colors. Black for random.";
+        for (i=1; i<4; i++){
+        	document.getElementById('colorPicker'+i).style.visibility = 'visible';
+        	document.getElementById('w'+i).style.visibility = 'visible';
+       		document.getElementById('r'+i).style.visibility = 'visible';
+        	document.getElementById('g'+i).style.visibility = 'visible';
+        	document.getElementById('b'+i).style.visibility = 'visible';
+        	document.getElementById('wlabel'+i).style.visibility = 'visible';
+        	document.getElementById('rlabel'+i).style.visibility = 'visible';
+        	document.getElementById('glabel'+i).style.visibility = 'visible';
+        	document.getElementById('blabel'+i).style.visibility = 'visible';
+        	document.getElementById('demo'+i).style.visibility = 'visible';
+            if (i==1) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Color 1:";
+            }// needs code on arduino side to determine fading values between colors
+            if (i==2) {
+           		document.getElementById("colorPick"+i).style.visibility = 'visible';
+                document.getElementById("colorPick"+i).innerHTML = "Color 2:";
+            }
+            if (i==3) {
+            	document.getElementById("colorPick"+i).style.visibility = 'visible';
+            	document.getElementById("colorPick"+i).innerHTML = "Color 3:";
+            }
+        }
+	}
+}
+
+function colorpicker(n) {
+    var hexa = document.getElementById("colorPicker"+n).value;
+	var hex= hexa.split("#");
+	var bigint = parseInt(hex[1], 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
+    document.getElementById("r"+n).value = r;
+    document.getElementById("g"+n).value = g;
+    document.getElementById("b"+n).value = b;
+    document.getElementById("demo"+n).innerHTML = "Color Code: #" + hex[1]+" ("+r+","+g+","+b+")";
+}
+
+function rgbToColorPicker(n) {
+	var r = document.getElementById("r"+n).valueAsNumber;
+    var g = document.getElementById("g"+n).valueAsNumber;
+    var b = document.getElementById("b"+n).valueAsNumber;
+    var hexr = ("0"+(r.toString(16))).slice(-2)
+    var hexg = ("0"+(g.toString(16))).slice(-2)
+    var hexb = ("0"+(b.toString(16))).slice(-2)
+	var hexrgb	=	"#"+hexr+hexg+hexb;
+    document.getElementById("colorPicker"+n).value = hexrgb;
+    document.getElementById("demo"+n).innerHTML = "Color Code: " + hexrgb+" ("+r+","+g+","+b+")";
+}
+function warmCool() {
+	var temperature=document.getElementById("warmcool").valueAsNumber;
+	if (temperature=='0') {
+		document.getElementById("colorPicker1").value = "#00ff80";
+		document.getElementById("colorPicker2").value = "#0000ff";
+		document.getElementById("colorPicker3").value = "#32e1e1";
+	}
+	if (temperature=='1') {
+		document.getElementById("colorPicker1").value = "#000000";
+		document.getElementById("colorPicker2").value = "#000000";
+		document.getElementById("colorPicker3").value = "#000000";
+	}
+	if (temperature=='2') {
+		document.getElementById("colorPicker1").value = "#ff0000";
+		document.getElementById("colorPicker2").value = "#ff8000";
+		document.getElementById("colorPicker3").value = "#ffff00";
+	}
+}
+
+function send(){
+var sysmd = document.getElementById('modeSelect').value;
+var time = document.getElementById('alarm').value;
+var wtime = document.getElementById('wakeTime').value;
+var spd=document.getElementById('speed').value;
+var spd2=document.getElementById('speed2').value;
+//var temper=document.getElementById('warmcool').value;
+var col1=document.getElementById('colorPicker1').value;
+var col2=document.getElementById('colorPicker2').value;
+var col3=document.getElementById('colorPicker3').value;
+var form = document.createElement("form");
+form.setAttribute("action",'Light');
+form.setAttribute("method",'POST');
+
+
+var sm = document.createElement('input');
+sm.name='sm';
+sm.value=sysmd.toString();
+form.appendChild(sm);
+
+var atm = document.createElement('input');
+atm.name='atm';
+atm.value=time.toString();
+form.appendChild(atm);
+
+var wT = document.createElement('input');
+wT.name='wT';
+wT.value=wtime.toString();
+form.appendChild(wT);
+
+var sp = document.createElement('input');
+sp.name='sp';
+sp.value=spd.toString();
+form.appendChild(sp);
+
+var sp2 = document.createElement('input');
+sp2.name='sp2';
+sp2.value=spd2.toString();
+form.appendChild(sp2);
+
+//var temp = document.createElement('input');
+//temp.name='temp';
+//temp.value=temper.toString();
+//form.appendChild(temp);
+
+var c1 = document.createElement('input');
+c1.name='c1';
+c1.value=col1.toString();
+var wh1= document.getElementById("w1").valueAsNumber;
+var hexw1 = ("0"+(wh1.toString(16))).slice(-2);
+c1.value+=hexw1;
+form.appendChild(c1);
+
+var c2 = document.createElement('input');
+c2.name='c2';
+c2.value=col2.toString();
+var wh2= document.getElementById("w2").valueAsNumber;
+var hexw2 = ("0"+(wh2.toString(16))).slice(-2);
+c2.value+=hexw2;
+form.appendChild(c2);
+
+var c3 = document.createElement('input');
+c3.name='c3';
+c3.value=col3.toString();
+var wh3= document.getElementById("w3").valueAsNumber;
+var hexw3 = ("0"+(wh3.toString(16))).slice(-2);
+c3.value+=hexw3;
+form.appendChild(c3);
+
+form.style.display='none';
+document.body.appendChild(form);
+form.submit();   
+}
+function sendclock(){
+var form = document.createElement("form");
+form.setAttribute("action",'Clock');
+form.setAttribute("method",'POST');
+var dc = document.createElement('input');
+var clkbrite=document.createElement('input');
+clkbrite.name='clkbrite';
+clkbrite.value=document.getElementById("clkbrite").valueAsNumber.toString();
+form.appendChild(clkbrite);
+dc.name='dc';
+dc.value="toggle";
+form.appendChild(dc);
+form.style.display='none';
+document.body.appendChild(form);
+form.submit();   
+}
+function sendclockmil(){
+var form = document.createElement("form");
+form.setAttribute("action",'Clockm');
+form.setAttribute("method",'POST');
+var clkbrite=document.createElement('input');
+clkbrite.name='clkbrite';
+clkbrite.value=document.getElementById("clkbrite").valueAsNumber.toString();
+form.appendChild(clkbrite);
+var milt = document.createElement('input');
+milt.name='milt';
+milt.value="toggle";
+form.appendChild(milt);
+form.style.display='none';
+document.body.appendChild(form);
+form.submit();   
+}
+function sendLightsOut(){
+var form=document.createElement("form");
+form.setAttribute("action",'lightsOut');
+form.setAttribute("method",'POST');
+var lightout=document.createElement('input');
+lightout.value="off";
+form.appendchild(lightout);
+form.style.display='none';
+document.body.appendchild(form);
+form.submit;
+}
+</script>
+<datalist id="tickmarks">
+  <option value="0" label="0%">
+  <option value="128" label="50%">
+  <option value="255" label="100%">
+</datalist>
+<datalist id="warmcoolList">
+	<option value="-1" label="cool">
+    <option value="0" label="all">
+    <option value="1" label="warm">
+</datalist>
+</body>
+
+</html>
