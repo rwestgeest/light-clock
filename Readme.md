@@ -8,7 +8,39 @@ Light alarm clock based on [instructable circuits light alarm clock](https://www
 * 0.36" 4-Digit Tube LED 7-Segment Display Module Red Common Anode TM1637
 * CHINLY WS2812B 16.4ft/5M Individually Addressable LED Strip 5050 RGB
 
+## Getting started
+
+In arduino IDE you must select the correct board and install some libraries. After this you should be able to upload the code and get started. Make sure you check the next paragraph "Notes on implementing the clock" as well.
+
+### Select the esp8266 board
+
+In file > preferences add:
+
+https://arduino.esp8266.com/stable/package_esp8266com_index.json
+
+to the additional boards manager urls
+
+In Tools > Board > Boards Manager, search for es8266 and install latest version.
+
+### Libraries installation
+
+Best way to do this is incrementally, by trying to compile the sketch and fix xxxx.h "file not found" errors by installing the necessary libraries. Sometimes there are multiple choices for a library. It is not always clear which one to choose. I installed:
+
+* AdaFruit NeoPixel (latest version)  
+  For driving  the led strip
+* TimeLib (latest version)  
+  For getting and setting the time on the device
+* TM1637 (latest version)  
+  For driving the led display
+
+
 ## Notes on implementing the clock
+
+### Uploading the web page
+
+If you have managed to upload your sketch and find the clock in your network. You'll find the web page to be empty. The web page upload is a different process/thing than uploading your sketch. 
+
+You must upload the web page to SPFF file system. This sounds complicated, and there's a lot of detail behind this but, here is a small tutorial, with just a few steps to upload the the html [here](https://www.esp8266.com/viewtopic.php?f=32&t=10081){:target="_blank"}
 
 ### Power and Consumption
 Clock can be powered by the micro usb board, given you use one meter of 60 leds. Seems to be drawing:
